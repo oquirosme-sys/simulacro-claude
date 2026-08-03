@@ -1,0 +1,304 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Simulacro CCA-F · Certificación Claude</title>
+<style>
+:root{
+  --ink:#151A21; --ink-2:#4A5563; --ink-3:#7C8798;
+  --paper:#F6F7F9; --card:#FFFFFF; --rule:#DEE3EA; --rule-2:#C3CBD6;
+  --mark:#2A55C4; --mark-bg:#EAEFFB;
+  --ok:#146B4C; --ok-bg:#E6F2ED;
+  --no:#A32118; --no-bg:#FBEBE9;
+  --flag:#8A5A00; --flag-bg:#FBF1DC;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --ink:#E8EBF0; --ink-2:#A2ACBB; --ink-3:#78828F;
+    --paper:#12151A; --card:#1A1E25; --rule:#2C323B; --rule-2:#3D4551;
+    --mark:#7FA3F0; --mark-bg:#1D2740;
+    --ok:#6BC79E; --ok-bg:#14291F;
+    --no:#EC8B80; --no-bg:#2E1917;
+    --flag:#D9AC5A; --flag-bg:#2B2314;
+  }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);
+  font-size:15px;line-height:1.65;-webkit-font-smoothing:antialiased}
+.wrap{max-width:780px;margin:0 auto;padding:28px 20px 80px}
+h1{font-size:23px;font-weight:600;letter-spacing:-.015em;margin:0 0 4px}
+h2{font-size:16px;font-weight:600;margin:0 0 10px}
+p{margin:0 0 12px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--ink-3);margin:0 0 8px}
+.lede{color:var(--ink-2);margin:0 0 22px}
+.card{background:var(--card);border:1px solid var(--rule);border-radius:10px;padding:20px 22px}
+.rule{height:1px;background:var(--rule);margin:22px 0}
+button{font:inherit;font-size:14px;color:var(--ink);background:var(--card);
+  border:1px solid var(--rule-2);border-radius:7px;padding:8px 15px;cursor:pointer;
+  transition:background .12s,border-color .12s}
+button:hover:not(:disabled){background:var(--paper);border-color:var(--ink-3)}
+button:disabled{opacity:.4;cursor:default}
+button:focus-visible,.opt:focus-visible{outline:2px solid var(--mark);outline-offset:2px}
+.btn-go{background:var(--ink);color:var(--paper);border-color:var(--ink);font-weight:500}
+.btn-go:hover:not(:disabled){background:var(--ink-2);border-color:var(--ink-2)}
+.row{display:flex;gap:9px;flex-wrap:wrap;align-items:center}
+.spread{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.clock{font-family:var(--mono);font-size:19px;font-weight:500;letter-spacing:.02em}
+.clock.low{color:var(--no)}
+.tag{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;
+  padding:3px 9px;border-radius:5px;background:var(--paper);color:var(--ink-2);border:1px solid var(--rule)}
+.tag-mark{background:var(--mark-bg);color:var(--mark);border-color:transparent}
+.tag-ok{background:var(--ok-bg);color:var(--ok);border-color:transparent}
+.tag-no{background:var(--no-bg);color:var(--no);border-color:transparent}
+.tag-flag{background:var(--flag-bg);color:var(--flag);border-color:transparent}
+.opt{display:flex;gap:12px;padding:12px 14px;margin-bottom:9px;border:1px solid var(--rule);
+  border-radius:8px;cursor:pointer;background:var(--card);transition:border-color .12s,background .12s}
+.opt:hover{border-color:var(--rule-2)}
+.opt.sel{border-color:var(--mark);background:var(--mark-bg)}
+.opt.key{border-color:var(--ok);background:var(--ok-bg)}
+.opt.bad{border-color:var(--no);background:var(--no-bg)}
+.opt .ltr{font-family:var(--mono);font-size:13px;color:var(--ink-3);flex-shrink:0;padding-top:1px}
+.opt.sel .ltr{color:var(--mark)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(34px,1fr));gap:5px;margin-top:16px}
+.cell{font-family:var(--mono);font-size:12px;height:31px;padding:0;border-radius:5px}
+.cell.done{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.cell.flag{background:var(--flag-bg);color:var(--flag);border-color:var(--flag)}
+.cell.here{outline:2px solid var(--mark);outline-offset:1px}
+.score{font-family:var(--mono);font-size:46px;font-weight:600;letter-spacing:-.02em;line-height:1}
+.scale{position:relative;height:8px;background:var(--paper);border:1px solid var(--rule);
+  border-radius:4px;margin:14px 0 6px}
+.scale .fill{position:absolute;left:0;top:0;bottom:0;border-radius:3px;background:var(--ink)}
+.scale .cut{position:absolute;top:-5px;bottom:-5px;width:2px;background:var(--no)}
+.scale-lab{display:flex;justify-content:space-between;font-family:var(--mono);
+  font-size:11px;color:var(--ink-3)}
+.dom{margin-bottom:13px}
+.dom-head{display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px}
+.bar{position:relative;height:6px;background:var(--paper);border:1px solid var(--rule);border-radius:3px}
+.bar .fill{position:absolute;left:0;top:0;bottom:0;border-radius:2px}
+.bar .tick{position:absolute;left:70%;top:-4px;bottom:-4px;width:1px;background:var(--rule-2)}
+.rev{background:var(--card);border:1px solid var(--rule);border-left:3px solid var(--ok);
+  border-radius:0 8px 8px 0;padding:16px 18px;margin-bottom:11px}
+.rev.wrong{border-left-color:var(--no)}
+.why{font-size:14px;color:var(--ink-2);margin:8px 0 0;padding-top:9px;border-top:1px solid var(--rule)}
+.note{font-size:13.5px;color:var(--ink-2);background:var(--paper);border:1px solid var(--rule);
+  border-radius:8px;padding:13px 15px;margin:0 0 18px}
+.hist{font-family:var(--mono);font-size:12.5px;color:var(--ink-2);display:flex;
+  justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--rule)}
+.foot{margin-top:34px;padding-top:16px;border-top:1px solid var(--rule);
+  font-size:12.5px;color:var(--ink-3)}
+label.chk{display:flex;gap:8px;align-items:center;font-size:14px;color:var(--ink-2);cursor:pointer}
+@media (max-width:520px){.wrap{padding:20px 14px 60px}.score{font-size:38px}}
+@media print{button,.grid{display:none}body{background:#fff}}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+<script>
+const DOM={1:"Arquitectura agéntica y orquestación",2:"Configuración de Claude Code",3:"Ingeniería de prompts",4:"Diseño de herramientas y MCP",5:"Gestión de contexto y confiabilidad"};
+const SHORT={1:"Arquitectura agéntica",2:"Configuración de Claude Code",3:"Ingeniería de prompts",4:"Herramientas y MCP",5:"Contexto y confiabilidad"};
+const PESO={1:"27%",2:"20%",3:"20%",4:"18%",5:"15%"};
+
+const BANK=[
+{d:1,q:"Un pipeline resume 50 artículos científicos y luego produce un informe único. Hoy un solo agente lo hace todo en secuencia y la calidad cae hacia el final del recorrido. ¿Qué rediseño corresponde?",o:["Aumentar max_tokens y usar un modelo más grande","Distribuir los resúmenes individuales en subagentes paralelos y dejar una etapa final de síntesis","Subir la temperatura para que varíe el estilo entre artículos","Encadenar los 50 resúmenes en una sola conversación más larga"],a:1,e:"Los resúmenes son independientes: se paralelizan (fan-out) y una etapa única los sintetiza (fan-in). La caída de calidad viene de acumular contexto irrelevante, no de falta de tokens ni de tamaño de modelo."},
+{d:1,q:"Un agente consume una API externa inestable: cerca del 10% de las llamadas devuelven error 503 y el agente abandona la tarea.",o:["Escribir en el system prompt que siempre reintente","Bajar la temperatura a 0","Manejar el fallo en la herramienta: reintentos con espera progresiva y devolver un error estructurado que el agente pueda interpretar","Cambiar a modo plan para que el usuario apruebe cada reintento"],a:2,e:"La confiabilidad frente a fallos transitorios se implementa en código determinista dentro de la herramienta, no pidiéndoselo al modelo. El error estructurado permite además que el agente decida si continúa o escala."},
+{d:1,q:"Un agente de soporte emite ocasionalmente reembolsos por encima del máximo que permite la política de la empresa.",o:["Reforzar la redacción del prompt con mayúsculas y advertencias","Validar el límite dentro de la herramienta de reembolso y rechazar los montos fuera de política","Agregar más ejemplos de reembolsos correctos","Reducir la temperatura del modelo"],a:1,e:"Un límite de política es una regla dura: se aplica en código, en la capa de la herramienta. El prompt y los ejemplos reducen la frecuencia del error pero no lo impiden."},
+{d:1,q:"Un flujo de tres pasos requiere, según el resultado del paso 3, volver a ejecutar el paso 1 con parámetros distintos. El equipo lo modeló como una cadena lineal fija.",o:["Es correcto: basta con documentar que a veces hay que relanzar el flujo manualmente","Reemplazarlo por un bucle con un evaluador que decida si repetir o continuar","Ejecutar los tres pasos en paralelo","Duplicar la cadena para cubrir ambos caminos"],a:1,e:"Hay retroalimentación condicional, así que el patrón correcto es un bucle evaluador-optimizador, no una cadena. El encadenamiento solo aplica cuando el recorrido es estrictamente lineal."},
+{d:1,q:"Un agente en producción resuelve las tareas, pero cuando algo sale mal nadie logra reconstruir por qué tomó cada decisión.",o:["Pedirle al agente que explique al final qué hizo","Activar pensamiento extendido para que el usuario vea su razonamiento","Instrumentar el sistema: registrar cada llamada de herramienta con sus entradas, salidas y el estado del bucle","Hacer que las respuestas al usuario sean más detalladas"],a:2,e:"La observabilidad se construye con registro estructurado de las acciones reales. Una explicación posterior del propio agente es una narración reconstruida, no evidencia de lo que ocurrió."},
+{d:1,q:"Hay que clasificar 10.000 documentos. No es urgente y el costo importa.",o:["Lanzar 10.000 llamadas paralelas en tiempo real","Usar la Batch API para procesamiento asíncrono","Reducir max_tokens al mínimo y llamar en serie","Aplicar caché de prompts a cada documento"],a:1,e:"Volumen alto, sin urgencia y con sensibilidad al costo es el caso exacto de la Batch API, que ofrece un descuento sustancial a cambio de procesamiento asíncrono."},
+{d:1,q:"Un prompt único hace tres cosas en una revisión legal: extraer cláusulas, puntuar riesgo y recomendar una acción. La calidad es mediocre en las tres.",o:["Descomponer en pasos especializados encadenados, cada uno con su prompt y su evaluación","Alargar el prompt con más instrucciones para cada tarea","Subir max_tokens","Ejecutar el mismo prompt tres veces y promediar"],a:0,e:"La descomposición de tareas es el remedio estándar cuando un prompt monolítico rinde mal en todo. Cada subtarea se optimiza y se evalúa por separado."},
+{d:1,q:"Un agente autónomo en producción puede enviar correos a clientes y emitir notas de crédito. Los responsables temen acciones irreversibles.",o:["Ejecutarlo solo en horario laboral","Registrar todo y revisar al día siguiente","Poner una aprobación humana en las acciones irreversibles y dejar autónomas las reversibles","Bajar la temperatura a 0"],a:2,e:"El criterio es la reversibilidad, no la hora ni la aleatoriedad. Las acciones con efectos externos irreversibles llevan compuerta humana; el resto puede quedar autónomo para no perder eficiencia."},
+{d:2,q:"En cada sesión un desarrollador debe recordarle a Claude Code que el proyecto usa pnpm y no npm.",o:["Un hook PreToolUse que bloquee npm","Anotarlo en el CLAUDE.md del proyecto","Crear una skill de gestión de paquetes","Repetirlo en cada mensaje"],a:1,e:"Es una convención del proyecto que aplica siempre y no requiere bloqueo: va en CLAUDE.md, que se lee automáticamente al inicio de cada sesión. El hook sería sobredimensionado salvo que fuera una regla crítica."},
+{d:2,q:"Ninguna edición al directorio /migrations puede ocurrir sin aprobación previa. Es una regla de cumplimiento sin excepciones.",o:["Una advertencia en mayúsculas en CLAUDE.md","Un hook PreToolUse que intercepte y bloquee las escrituras a esa ruta","Una skill que explique el procedimiento de migraciones","Trabajar siempre en modo plan"],a:1,e:"«Sin excepciones» exige barrera determinista, no instrucción. El hook PreToolUse evalúa la operación antes de ejecutarla y la corta. CLAUDE.md es guía de alta fiabilidad, pero sigue dependiendo del juicio del modelo."},
+{d:2,q:"El equipo quiere que el formateador de código se ejecute automáticamente después de cada archivo que Claude Code escriba.",o:["Un hook PostToolUse","Un hook Stop","Una instrucción en CLAUDE.md","Un plugin de la comunidad"],a:0,e:"La acción debe ocurrir después de cada uso de la herramienta de escritura: ese es exactamente el evento PostToolUse. Stop se dispara al terminar la sesión, no por archivo."},
+{d:2,q:"Existe una guía de estilo de marca de 60 páginas que solo se usa cuando se redacta material de mercadeo, una fracción pequeña de las sesiones.",o:["Pegarla completa en CLAUDE.md para que esté siempre disponible","Empaquetarla como skill: SKILL.md breve con los disparadores y la guía en reference.md","Convertirla en un hook","Dividirla en varios archivos CLAUDE.md"],a:1,e:"Carga progresiva: CLAUDE.md se lee en todas las sesiones y 60 páginas ahí consumirían contexto incluso en trabajo que nada tiene que ver con mercadeo. La skill se activa solo cuando aplica."},
+{d:2,q:"Se necesita un escaneo nocturno de vulnerabilidades que ejecute pasos personalizados, acceda a un registro privado con credenciales del repositorio y publique un informe como artefacto de CI.",o:["Una tarea programada gestionada en la infraestructura de Anthropic","Una GitHub Action con workflow propio y secretos del repositorio","La aplicación gestionada de GitHub","Una sesión headless dejada corriendo"],a:1,e:"Contraste deliberado con el caso de la auditoría simple: aquí hay pasos personalizados, secretos de CI y artefactos, así que se justifica mantener un workflow. La opción gestionada gana solo cuando el enunciado pide explícitamente no mantener nada."},
+{d:2,q:"Un desarrollador junior ejecuta Claude Code en modo automático y borra un directorio por error. ¿Cuál es la respuesta arquitectónica?",o:["Pedirle que revise mejor antes de aceptar","Prohibir el modo automático a todo el equipo","Restringir permisos con lista de operaciones permitidas y hooks que bloqueen las destructivas","Aumentar la frecuencia de commits"],a:2,e:"Los controles se implementan en la configuración, no en la disciplina individual. La lista de permisos más hooks de bloqueo permite conservar la velocidad del modo automático sin exponer operaciones destructivas."},
+{d:3,q:"Un prompt de extracción funciona con documentos cortos pero omite campos que aparecen al final de los documentos largos.",o:["Subir la temperatura","Reestructurar: documento delimitado con etiquetas XML y las instrucciones y la consulta después del documento, pidiendo la salida campo por campo","Dividir el documento en 20 fragmentos y perder la relación entre ellos","Repetir la llamada hasta que aparezcan todos los campos"],a:1,e:"En contextos largos, colocar las instrucciones después del contenido y delimitar con XML mejora notablemente el seguimiento. Pedir la salida estructurada campo por campo reduce las omisiones."},
+{d:3,q:"Un resumidor produce un tono distinto en cada ejecución y el equipo necesita consistencia editorial.",o:["Temperatura 0, especificación explícita del tono y ejemplos del estilo deseado","Aumentar max_tokens","Ejecutarlo tres veces y elegir la mejor salida","Usar un modelo más grande"],a:0,e:"La variabilidad se ataca con temperatura baja más una definición concreta del estilo. Los ejemplos son la forma más eficaz de comunicar tono, porque mostrar supera a describir."},
+{d:3,q:"El equipo cambió un prompt y afirma que la versión 2 es mejor que la versión 1, pero no puede demostrarlo.",o:["Pedirle a Claude que compare ambos prompts y opine","Publicar la versión 2 y observar las quejas de los usuarios","Construir un conjunto de casos de prueba y calificar ambas versiones con evaluadores por código y basados en modelo","Elegir la versión más corta"],a:2,e:"Evaluación sistemática con dataset y graders. Sin métricas, una mejora aparente en un ejemplo puede estar degradando otros casos que nadie está mirando."},
+{d:3,q:"Un evaluador basado en modelo resulta demasiado generoso: puntúa alto salidas que un revisor humano rechaza.",o:["Cambiar a un modelo más pequeño para el evaluador","Definir una rúbrica con criterios explícitos, exigir el razonamiento antes de la nota y calibrar contra ejemplos etiquetados por humanos","Bajar automáticamente todas las notas en dos puntos","Reemplazarlo por un evaluador por código"],a:1,e:"Un grader es un prompt y se optimiza como tal: rúbrica concreta, razonamiento previo a la puntuación y calibración contra un patrón humano. Un evaluador por código no serviría porque el criterio es subjetivo."},
+{d:3,q:"Un asistente de ingeniería comete errores en cálculos numéricos de varios pasos.",o:["Pedirle que revise su respuesta dos veces","Delegar el cálculo a una herramienta determinista o a ejecución de código y dejar al modelo la interpretación","Subir max_tokens","Usar temperatura 1 para explorar más caminos"],a:1,e:"La aritmética exacta se delega a código, no se le exige al modelo. Es el mismo principio por el que un servidor de cálculos normativos es mejor arquitectura que confiar en la estimación del modelo."},
+{d:3,q:"Un prompt incorpora texto enviado por usuarios externos y existe el riesgo de que ese texto contenga instrucciones dirigidas al modelo.",o:["Confiar en que el modelo distinga instrucciones legítimas","Delimitar el contenido con etiquetas XML, declarar explícitamente que es dato a analizar y no otorgar herramientas sensibles por indicación del contenido","Eliminar todos los signos de puntuación del texto del usuario","Reducir la longitud del contenido"],a:1,e:"Defensa en capas contra inyección de prompt: delimitación clara, declaración del rol del contenido como dato, y control de privilegios en la capa de herramientas en lugar de depender de la interpretación."},
+{d:4,q:"Un servidor expone una herramienta llamada obtener_datos con la descripción «obtiene datos». Claude la invoca en momentos inadecuados.",o:["Renombrarla de forma específica y escribir una descripción que indique qué devuelve y cuándo usarla","Reducir la temperatura","Ponerla primero en la lista de herramientas","Añadir más herramientas para dar contexto"],a:0,e:"La descripción es el campo que Claude lee para decidir. Nombres genéricos y descripciones vacías producen selección errónea; es el primer lugar donde mirar siempre."},
+{d:4,q:"Un servidor MCP expone 40 herramientas. Claude elige mal con frecuencia y el esquema consume una porción considerable del contexto.",o:["Aumentar la ventana de contexto","Agrupar y reducir: exponer solo las herramientas relevantes al caso de uso, o separar en varios servidores por dominio","Acortar todas las descripciones al mínimo","Ordenar las herramientas alfabéticamente"],a:1,e:"Demasiadas herramientas degradan la selección y encarecen cada llamada. Acortar las descripciones empeoraría el problema de elección: lo correcto es reducir el conjunto expuesto."},
+{d:4,q:"El equipo quiere que Claude Desktop pueda consultar el documento de especificación compartido del proyecto para responder preguntas sobre él.",o:["Una herramienta que reciba una pregunta y devuelva la respuesta","Un recurso identificado por URI con el contenido del documento","Un prompt con la especificación pegada","Un hook que cargue el documento"],a:1,e:"Contenido que se lee como contexto es la definición de recurso. Envolverlo en una herramienta añadiría una capa innecesaria; un prompt es una plantilla de instrucción, no un contenedor de documentos."},
+{d:4,q:"Existe una lista de verificación de revisión de código que todo el equipo debería invocar de la misma forma, ya refinada tras meses de uso.",o:["Un recurso con la lista en texto","Una herramienta que ejecute la revisión","Un prompt de MCP que encapsule la instrucción probada","Un archivo en el repositorio"],a:2,e:"Instrucción reutilizable y previamente probada que el usuario invoca: es la primitiva prompt. El recurso entregaría el texto como contexto, pero no la instrucción lista para ejecutar de forma uniforme."},
+{d:4,q:"Un servidor MCP funciona bien en la máquina de su autor por stdio. Ahora debe estar disponible para veinte colegas que no tienen Python instalado.",o:["Enviarles el archivo del servidor y una guía de instalación","Desplegarlo con transporte remoto HTTP y autenticación, manteniendo la misma lógica de herramientas y recursos","Convertir cada herramienta en una skill","Reescribirlo en JavaScript"],a:1,e:"El transporte es una capa independiente de las capacidades: la misma definición de tools y resources se sirve por HTTP en lugar de stdio. La configuración del cliente pasa de command a url y se añade autenticación."},
+{d:5,q:"En una sesión larga de Claude Code, decisiones de arquitectura tomadas al inicio se pierden tras la compactación automática.",o:["Desactivar la compactación","Persistir esas decisiones en CLAUDE.md o en un archivo del repositorio a medida que se toman","Empezar una sesión nueva cada hora","Pedir resúmenes más largos"],a:1,e:"La conversación es memoria volátil; los archivos son memoria duradera. Lo que debe sobrevivir se escribe, no se confía al historial. Desactivar la compactación solo adelanta el momento en que el contexto se agota."},
+{d:5,q:"Un sistema RAG recupera fragmentos que carecen de referencia: uno dice «aumentó un 12% respecto al periodo anterior» sin indicar de qué indicador ni de qué proyecto se trata.",o:["Aumentar el tamaño de los fragmentos hasta que quepa todo el documento","Aplicar recuperación contextual: anteponer a cada fragmento un resumen de su contexto antes de indexarlo","Recuperar más fragmentos por consulta","Cambiar el modelo de embeddings"],a:1,e:"La recuperación contextual resuelve exactamente la pérdida de referencia al fragmentar: cada chunk se enriquece con su contexto antes de vectorizarse, sin inflar todo el índice."},
+{d:5,q:"Un asistente de políticas internas cita ocasionalmente normas que no existen en la documentación de la empresa.",o:["Advertir a los usuarios que verifiquen todo","Anclar las respuestas en fragmentos recuperados, activar citas verificables e instruir que responda solo con el contexto provisto y declare cuando no encuentre la información","Subir la temperatura para que sea más creativo","Ampliar el prompt del sistema con más contexto general"],a:1,e:"La alucinación en dominios normativos se mitiga con anclaje en fuentes, citas verificables y una salida explícita de «no encontrado». Trasladar la carga de verificación al usuario no es una solución arquitectónica."},
+{d:5,q:"Una aplicación envía el mismo prompt de sistema de 8.000 tokens en cada una de sus 100.000 llamadas diarias.",o:["Acortar el prompt eliminando instrucciones necesarias","Aplicar caché de prompts sobre el bloque estable","Migrar todo a la Batch API","Dividir el prompt entre varias llamadas"],a:1,e:"Prefijo grande, estable y repetido: caso de libro para caching, que reduce costo y latencia sin sacrificar instrucciones. La Batch API ayudaría solo si el trabajo tolerara latencia asíncrona."},
+{d:5,q:"Cuando una herramienta falla, el agente continúa y entrega al usuario una respuesta segura pero incorrecta, sin señal alguna del error.",o:["Reintentar en silencio hasta que funcione","Devolver errores estructurados al modelo, validar la salida y hacer que el fallo sea visible en lugar de silencioso","Ocultar los errores para no confundir al usuario","Aumentar el tiempo de espera de la herramienta"],a:1,e:"Un fallo silencioso es peor que un fallo evidente, porque produce confianza injustificada. Las herramientas deben devolver errores que el modelo pueda interpretar y el sistema debe validar antes de responder."}
+];
+
+const LIMITE=720, MIN=60, K_HIST="cca_hist", K_CURR="cca_curr";
+let S={fase:"inicio",orden:[],opts:[],i:0,resp:[],flags:[],seg:MIN*60,cron:true,pausa:false};
+let reloj=null;
+const app=document.getElementById("app");
+const esc=s=>String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+const hhmm=s=>Math.floor(s/60)+":"+String(s%60).padStart(2,"0");
+const guardar=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
+const leer=k=>{try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}};
+const borrar=k=>{try{localStorage.removeItem(k)}catch(e){}};
+const mezclar=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const preg=n=>BANK[S.orden[n]];
+const opciones=n=>S.opts[n].map(k=>preg(n).o[k]);
+const clave=n=>S.opts[n].indexOf(preg(n).a);
+
+function nuevo(revuelto){
+  S.orden=revuelto?mezclar(BANK.map((_,i)=>i)):BANK.map((_,i)=>i);
+  S.opts=S.orden.map(idx=>revuelto?mezclar([0,1,2,3]):[0,1,2,3]);
+  S.i=0;S.resp=new Array(BANK.length).fill(null);S.flags=new Array(BANK.length).fill(false);
+  S.seg=S.cron?MIN*60:0;S.pausa=false;S.fase="examen";
+  tick();pintar();
+}
+function tick(){
+  clearInterval(reloj);
+  if(!S.cron)return;
+  reloj=setInterval(()=>{
+    if(S.fase!=="examen"||S.pausa)return;
+    S.seg--;guardar(K_CURR,S);
+    if(S.seg<=0){entregar()}else{const c=document.getElementById("clock");
+      if(c){c.textContent=hhmm(S.seg);c.className="clock"+(S.seg<300?" low":"")}}
+  },1000);
+}
+function entregar(){clearInterval(reloj);S.fase="resultado";borrar(K_CURR);archivar();pintar()}
+function archivar(){
+  let ok=0;S.orden.forEach((_,n)=>{if(S.resp[n]===clave(n))ok++});
+  const h=leer(K_HIST)||[];
+  h.unshift({f:new Date().toLocaleString("es-CR",{day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit"}),
+    p:Math.round(ok/BANK.length*1000),ok:ok,t:S.cron?MIN*60-S.seg:null});
+  guardar(K_HIST,h.slice(0,12));
+}
+
+function pintar(){
+  if(S.fase==="inicio")inicio();
+  else if(S.fase==="examen")examen();
+  else resultado();
+  window.scrollTo(0,0);
+}
+
+function inicio(){
+  const h=leer(K_HIST)||[]; let curr=leer(K_CURR);
+  if(curr&&!valido(curr)){borrar(K_CURR);curr=null}
+  const cuenta={};[1,2,3,4,5].forEach(d=>cuenta[d]=BANK.filter(q=>q.d===d).length);
+  app.innerHTML=
+  '<p class="eyebrow">Simulacro de certificación</p>'+
+  '<h1>Claude Certified Architect · Foundations</h1>'+
+  '<p class="lede">30 escenarios de producción · '+MIN+' minutos · línea de corte en '+LIMITE+' sobre 1000</p>'+
+  (curr?'<div class="note"><strong>Hay un intento sin terminar.</strong> Quedaron '+(curr.resp.filter(x=>x!==null).length)+' preguntas respondidas'+(curr.cron?' y '+hhmm(curr.seg)+' en el reloj':'')+'.<div class="row" style="margin-top:10px"><button class="btn-go" onclick="retomar()">Retomar intento</button><button onclick="descartar()">Descartar</button></div></div>':'')+
+  '<div class="card"><h2>Reparto por dominio</h2>'+
+  [1,2,3,4,5].map(d=>'<div class="spread" style="padding:7px 0;border-bottom:1px solid var(--rule)"><span style="font-size:14px">'+DOM[d]+'</span><span class="mono" style="font-size:13px;color:var(--ink-3)">'+cuenta[d]+' · '+PESO[d]+'</span></div>').join("")+
+  '<div style="margin-top:16px" class="row">'+
+  '<label class="chk"><input type="checkbox" id="cron" checked> Con cronómetro</label>'+
+  '<label class="chk"><input type="checkbox" id="mix" checked> Orden aleatorio</label></div>'+
+  '<div class="row" style="margin-top:16px"><button class="btn-go" onclick="arrancar()">Comenzar simulacro</button></div></div>'+
+  (h.length?'<div class="card" style="margin-top:16px"><h2>Intentos anteriores</h2>'+
+    h.map(x=>'<div class="hist"><span>'+esc(x.f)+'</span><span>'+x.ok+'/30 · <strong style="color:'+(x.p>=LIMITE?"var(--ok)":"var(--no)")+'">'+x.p+'</strong></span></div>').join("")+
+    '<div class="row" style="margin-top:12px"><button onclick="limpiar()">Borrar historial</button></div></div>':'')+
+  pie();
+}
+
+function examen(){
+  const n=S.i,q=preg(n),ops=opciones(n),hechas=S.resp.filter(x=>x!==null).length;
+  app.innerHTML=
+  '<div class="spread" style="margin-bottom:16px">'+
+    '<span class="mono" style="font-size:12.5px;color:var(--ink-3)">'+String(n+1).padStart(2,"0")+' / 30 · '+hechas+' respondidas</span>'+
+    (S.cron?'<div class="row"><span class="clock'+(S.seg<300?" low":"")+'" id="clock">'+hhmm(S.seg)+'</span><button onclick="pausar()" style="padding:4px 11px;font-size:13px">'+(S.pausa?"Reanudar":"Pausar")+'</button></div>':'<span class="mono" style="font-size:12.5px;color:var(--ink-3)">sin reloj</span>')+
+  '</div>'+
+  (S.pausa?'<div class="card" style="text-align:center;padding:44px 22px"><p style="margin:0;color:var(--ink-2)">Intento en pausa. El reloj está detenido.</p><div class="row" style="justify-content:center;margin-top:14px"><button class="btn-go" onclick="pausar()">Reanudar</button></div></div>':
+  '<div class="card">'+
+    '<div class="spread" style="margin-bottom:14px"><span class="tag">'+SHORT[q.d]+'</span>'+
+    '<button onclick="marcar()" style="padding:4px 11px;font-size:13px;'+(S.flags[n]?"background:var(--flag-bg);color:var(--flag);border-color:var(--flag)":"")+'">'+(S.flags[n]?"Marcada":"Marcar para revisar")+'</button></div>'+
+    '<p style="font-size:15.5px;margin:0 0 16px">'+esc(q.q)+'</p>'+
+    ops.map((o,k)=>'<div class="opt'+(S.resp[n]===k?" sel":"")+'" tabindex="0" role="button" onclick="elegir('+k+')" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();elegir('+k+')}"><span class="ltr">'+"ABCD"[k]+'</span><span>'+esc(o)+'</span></div>').join("")+
+  '</div>')+
+  '<div class="row" style="margin-top:14px"><button onclick="mover(-1)"'+(n===0?" disabled":"")+'>Anterior</button>'+
+  '<button onclick="mover(1)"'+(n===29?" disabled":"")+'>Siguiente</button>'+
+  '<button class="btn-go" style="margin-left:auto" onclick="confirmar()">Entregar</button></div>'+
+  '<div class="grid">'+S.orden.map((_,k)=>'<button class="cell'+(S.resp[k]!==null?" done":"")+(S.flags[k]?" flag":"")+(k===n?" here":"")+'" onclick="saltar('+k+')" aria-label="Pregunta '+(k+1)+'">'+(k+1)+'</button>').join("")+'</div>'+
+  '<p style="font-size:12.5px;color:var(--ink-3);margin-top:12px">Atajos: A B C D para responder · flechas para navegar · M para marcar</p>';
+}
+
+function resultado(){
+  let ok=0;const dom={};[1,2,3,4,5].forEach(d=>dom[d]=[0,0]);
+  S.orden.forEach((idx,n)=>{const q=BANK[idx];dom[q.d][1]++;if(S.resp[n]===clave(n)){ok++;dom[q.d][0]++}});
+  const pct=ok/BANK.length, pts=Math.round(pct*1000), pasa=pts>=LIMITE;
+  app.innerHTML=
+  '<p class="eyebrow">Resultado del intento</p>'+
+  '<div class="card">'+
+    '<div class="row" style="align-items:baseline;gap:14px"><span class="score">'+pts+'</span>'+
+    '<span style="color:var(--ink-2)">de 1000 · '+ok+' de 30 correctas ('+Math.round(pct*100)+'%)</span></div>'+
+    '<div class="scale"><div class="fill" style="width:'+Math.max(1,pct*100)+'%"></div><div class="cut" style="left:'+(LIMITE/10)+'%"></div></div>'+
+    '<div class="scale-lab"><span>0</span><span style="color:var(--no)">corte '+LIMITE+'</span><span>1000</span></div>'+
+    '<p style="margin:14px 0 0"><span class="tag '+(pasa?"tag-ok":"tag-no")+'">'+(pasa?"Sobre la línea de corte":"Bajo la línea de corte")+'</span></p>'+
+  '</div>'+
+  '<div class="card" style="margin-top:16px"><h2>Diagnóstico por dominio</h2>'+
+  [1,2,3,4,5].map(d=>{const p=dom[d][1]?dom[d][0]/dom[d][1]:0;
+    return '<div class="dom"><div class="dom-head"><span>'+DOM[d]+' <span class="mono" style="color:var(--ink-3);font-size:12px">'+PESO[d]+'</span></span><span class="mono" style="color:var(--ink-2)">'+dom[d][0]+'/'+dom[d][1]+'</span></div>'+
+    '<div class="bar"><div class="fill" style="width:'+Math.max(1,p*100)+'%;background:'+(p>=0.7?"var(--ok)":"var(--flag)")+'"></div><div class="tick"></div></div></div>'}).join("")+
+  '<p style="font-size:13px;color:var(--ink-3);margin:6px 0 0">La marca vertical señala el 70%. Los dominios por debajo son los que conviene repasar primero, ponderados por su peso en el examen.</p></div>'+
+  '<div class="row" style="margin-top:16px"><button class="btn-go" onclick="volver()">Nuevo intento</button></div>'+
+  '<div class="rule"></div><h2>Revisión pregunta por pregunta</h2>'+
+  S.orden.map((idx,n)=>{const q=BANK[idx],ops=opciones(n),c=clave(n),bien=S.resp[n]===c;
+    return '<div class="rev'+(bien?"":" wrong")+'">'+
+    '<div class="spread" style="margin-bottom:9px"><span class="mono" style="font-size:12px;color:var(--ink-3)">'+String(n+1).padStart(2,"0")+' · '+SHORT[q.d]+'</span>'+
+    '<span class="tag '+(bien?"tag-ok":"tag-no")+'">'+(bien?"Correcta":S.resp[n]===null?"Sin responder":"Incorrecta")+'</span></div>'+
+    '<p style="margin:0 0 12px;font-size:14.5px">'+esc(q.q)+'</p>'+
+    ops.map((o,k)=>'<div class="opt'+(k===c?" key":(S.resp[n]===k?" bad":""))+'" style="cursor:default;margin-bottom:6px"><span class="ltr">'+"ABCD"[k]+'</span><span>'+esc(o)+'</span></div>').join("")+
+    '<p class="why">'+esc(q.e)+'</p></div>'}).join("")+
+  pie();
+}
+
+function pie(){
+  return '<div class="foot">Simulacro de práctica preparado con Claude para Oscar Quirós · agosto 2026.<br>'+
+  'Las preguntas son de elaboración propia y no provienen del examen oficial de Anthropic: sirven para entrenar el tipo de razonamiento por escenarios, no para anticipar contenidos. '+
+  'Confirmá formato, dominios y requisitos vigentes en la guía oficial del examen antes de inscribirte.</div>';
+}
+
+function arrancar(){S.cron=document.getElementById("cron").checked;nuevo(document.getElementById("mix").checked)}
+function valido(c){return c&&Array.isArray(c.orden)&&c.orden.length===BANK.length&&
+  Array.isArray(c.opts)&&c.opts.length===BANK.length&&c.opts.every(o=>Array.isArray(o)&&o.length===4)&&
+  Array.isArray(c.resp)&&Array.isArray(c.flags)&&c.orden.every(i=>i>=0&&i<BANK.length)}
+function retomar(){const c=leer(K_CURR);
+  if(valido(c)){S=c;S.pausa=false;S.fase="examen";tick();pintar()}
+  else{borrar(K_CURR);alert("El intento guardado no se pudo recuperar. Se empieza uno nuevo.");pintar()}}
+function descartar(){borrar(K_CURR);pintar()}
+function limpiar(){if(confirm("¿Borrar el historial de intentos?")){borrar(K_HIST);pintar()}}
+let avance=null;
+function elegir(k,ya){clearTimeout(avance);S.resp[S.i]=k;guardar(K_CURR,S);
+  const ultima=S.i>=BANK.length-1;
+  if(ya&&!ultima){S.i++;pintar();return}
+  pintar();
+  if(!ultima){avance=setTimeout(()=>{S.i++;pintar()},140)}}
+function marcar(){S.flags[S.i]=!S.flags[S.i];guardar(K_CURR,S);pintar()}
+function mover(d){clearTimeout(avance);S.i=Math.min(29,Math.max(0,S.i+d));pintar()}
+function saltar(k){clearTimeout(avance);S.i=k;pintar()}
+function pausar(){S.pausa=!S.pausa;pintar()}
+function volver(){S.fase="inicio";pintar()}
+function confirmar(){
+  const faltan=S.resp.filter(x=>x===null).length, marcadas=S.flags.filter(Boolean).length;
+  let m="¿Entregar el simulacro?";
+  if(faltan)m+="\n\nQuedan "+faltan+" preguntas sin responder.";
+  if(marcadas)m+="\nTenés "+marcadas+" marcadas para revisar.";
+  if(confirm(m))entregar();
+}
+document.addEventListener("keydown",e=>{
+  if(S.fase!=="examen"||S.pausa)return;
+  const k=e.key.toUpperCase();
+  if("ABCD".includes(k)&&!e.metaKey&&!e.ctrlKey){e.preventDefault();elegir("ABCD".indexOf(k),true)}
+  else if(e.key==="ArrowRight"){mover(1)}
+  else if(e.key==="ArrowLeft"){mover(-1)}
+  else if(k==="M"){marcar()}
+});
+pintar();
+</script>
+</body>
+</html>
